@@ -24,10 +24,10 @@ class _CRUDScreenState extends State<CRUDScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Beim drücken auf den Button wir die jeweilige Funktion aufgerufen
-            ElevatedButton(onPressed: createData, child: Text("Create")),
-            ElevatedButton(onPressed: readData, child: Text("Read")),
-            ElevatedButton(onPressed: updateData, child: Text("Update")),
-            ElevatedButton(onPressed: deleteData, child: Text("Delete")),
+            ElevatedButton(onPressed: createData, child: const Text("Create")),
+            ElevatedButton(onPressed: readData, child: const Text("Read")),
+            ElevatedButton(onPressed: updateData, child: const Text("Update")),
+            ElevatedButton(onPressed: deleteData, child: const Text("Delete")),
             Text("der Name im Speicher lautet: $storedData"),
           ],
         ),
