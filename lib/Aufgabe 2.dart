@@ -1,72 +1,81 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:async';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class CRUDScreen extends StatefulWidget {
+  const CRUDScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: HomeScreen(),
-    );
-  }
+  State<CRUDScreen> createState() => _CRUDScreenState();
 }
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class _CRUDScreenState extends State<CRUDScreen> {
+  // Key um auf den Speicher zuzugreifen
+  String key = 'key1';
 
+  //Der Auf dem App Screen zu sehende Speicher
+  String storedData = 'Simon';
   @override
+  // Das solltet ihr alle drauf haben ;)
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('CRUD'),
-      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
-              onPressed: () => createData(),
-              child: const Text('Create'),
-            ),
-            ElevatedButton(
-              onPressed: () => readData(),
-              child: const Text('Read'),
-            ),
-            ElevatedButton(
-              onPressed: () => updateData(),
-              child: const Text('Update'),
-            ),
-            ElevatedButton(
-              onPressed: () => deleteData(),
-              child: const Text('Delete'),
-            ),
+            // Beim drücken auf den Button wir die jeweilige Funktion aufgerufen
+            ElevatedButton(onPressed: createData, child: Text("Create")),
+            ElevatedButton(onPressed: readData, child: Text("Read")),
+            ElevatedButton(onPressed: updateData, child: Text("Update")),
+            ElevatedButton(onPressed: deleteData, child: Text("Delete")),
+            Text("der Name im Speicher lautet: $storedData"),
           ],
         ),
       ),
     );
   }
 
-  // CRUD mit Shared Preferences
-
   Future<void> createData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('info', 'Data saved');
+    // Wir holen uns die Instanz
+    final preferences = await SharedPreferences.getInstance();
+    // Wir bearbeiten die Instanz
+    await preferences.setString('key1', 'IrgendeinString');
+    print("create");
+    readData();
   }
 
-  Future<void> readData() async {}
+  Future<void> readData() async {
+    // Wir holen uns die Instanz
+    final preferences = await SharedPreferences.getInstance();
 
-  Future<void> updateData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('info', 'updated Data');
+    // Wir holen uns die Daten aus der Instanz
+    setState(() {
+      String? data = preferences.getString('key1');
+
+      // Abfrage ob String == null
+      if (data == null) {
+        storedData = "no data";
+      } else {
+        storedData = data;
+      }
+    });
   }
 
-  Future<void> deleteData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove('info');
+  void updateData() async {
+    print("update");
+    // Wir holen uns die Instanz
+    final preferences = await SharedPreferences.getInstance();
+    // Wir bearbeiten die Instanz
+    await preferences.setString('key1', 'Daten Aktualisiert');
+    readData();
+  }
+
+  void deleteData() async {
+    // Wir holen uns die Instanz
+    final preferences = await SharedPreferences.getInstance();
+    // Wir bearbeiten die Instanz
+    preferences.remove(key);
+    print("deleted");
+    readData();
   }
 }
